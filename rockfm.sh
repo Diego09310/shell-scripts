@@ -1,4 +1,10 @@
 #!/bin/bash
+# Nombre: Diego Avendaño Peces
+#
+# Crea una lista con las canciones que suenan en Rockfm. Utiliza la información
+# proporcionada en el reproductor
+#
+# Para usarlo, añadir la tarea a cron, o descomentar el código y dejarlo como un bucle
 
 #period=120
 list_file=/home/diego/Dropbox/Github/shell-scripts/list.txt
