@@ -1,0 +1,67 @@
+#! /bin/sh
+# Nombre del autor: Diego Avendaño Peces
+
+# Lista directorios mas ocupados por debajo de $1
+
+# Definición de variables (por defecto)
+K=10
+DIR=$HOME
+
+# Comprobación demasiados argumentos
+if [ $# -gt 3 ]
+	then 
+	echo Too many arguments
+	exit
+fi
+
+
+if [ $1 = "-n" ]
+	then
+#	if [ $2 -lt 1 ]
+#		then 
+#		echo Invalid argument, please insert a valid number
+#		exit
+#	fi
+	K=$2
+	if [ $# -eq 3 ]
+		then 
+		DIR=$3
+	fi
+elif [ `echo $1 | cut -b 1` = "-" ]
+	then 
+	echo "Invalid option"
+	exit
+
+elif [ $# -gt 1 ]
+	then 
+	echo Too many directories
+	exit
+
+elif [ $# -eq 1 ]
+	then
+	DIR=$1
+fi
+
+if [ ! -e $DIR ]
+	then
+	echo "The directory doesn't exist" 
+	exit
+fi
+
+if [ ! -d $DIR ]
+	then
+	echo "The file isn't a directory" 
+	exit
+fi
+
+du $DIR | sort -n | tail -n $K
+
+
+# Casos de error:
+# -demasiados argumentos (más de 3) Hecho
+# -demasiadas opciones (incluida en el anterior, exceptuando -nx) ~Hecho
+# -demasiadas direcciones Hecho (creo, dos casos: sin -n, elif -gt 1; con -n primera cond)
+# -directorio incorrecto Hecho
+
+
+# Otra opción para errores: exit "Too many..."

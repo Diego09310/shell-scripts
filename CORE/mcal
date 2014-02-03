@@ -1,0 +1,72 @@
+#!/bin/sh
+# Nombre: Diego Avendaño Peces
+
+# Muestra el calendario del mes y del año que se le especifique. Si no se especifica nada, se utilizan los valores actuales
+
+# Definición de variables
+var1=$1
+var2=$2
+tot=$#
+
+set `date`
+
+# Ayuda (argumento -help)
+if [ "$var1" = "-help" ]
+	then 
+	echo 	"Usage: mcal [month] [year]"
+	exit 0
+fi		
+
+# Tratamiento de errores
+case $tot in
+	0) cal;;							# Caso en el que no hay argumentos
+
+	1) valid_month=0						# Bucle para comprobar si el mes forma parte de los comandos aceptados por cal
+	   for i in jan feb mar apr may jun jul aug sep oct nov dec ene abr ago 
+		do 
+		if [ `echo $var1 | cut -b 1-3` = $i ]
+			then 
+			valid_month=1
+		fi
+	   done
+
+	   if [ $var1 -gt 12 2>/dev/null ]				# Comprobación de si el argumento es mayor que 12, se considera año
+		then 
+		cal $var1
+	   elif [ $var1 -gt 0 2>/dev/null ]				# Comprobación de si el mes es válido
+		then
+		cal $var1 $6 
+	   elif [ $valid_month -eq 1 ]
+		then
+		cal $var1 $6
+	   else 
+		echo Invalid arguments >&2				# Si no es mes ni vale como mes, no es válido
+		exit 1
+	   fi;;
+
+	2) valid_month=0						# De nuevo, bucle para comprobar los argumentos introducidos
+	   for i in jan feb mar apr may jun jul aug sep oct nov dec ene abr ago 
+		do 
+		if [ `echo $var1 | cut -b 1-3` = $i ]
+			then 
+			valid_month=1
+		fi
+	   done
+	   if !(test $var2 -eq $var2 2>/dev/null)			# Se comprueba que el segundo argumento sea un número
+		then
+		echo "Invalid arguments (the year must be a number)"  >&2
+		exit 1
+	   elif [ $valid_month -eq 1 ]
+		then 
+		cal $var1 $var2
+	   elif [ $var1 -gt 0 2>/dev/null ]
+		then
+		cal $var1 $var2
+	   else 
+		echo "Invalid arguments (month)"
+		exit 1
+	   fi;;
+
+	*) echo Too many arguments >&2
+	   exit 1;;
+esac

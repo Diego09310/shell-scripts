@@ -1,0 +1,85 @@
+#! /bin/sh
+# Nombre del autor: Diego Avendaño Peces
+
+# Devuelve una lista con los subdirectorios de mayor tamaño 
+
+# Definición de variables (por defecto)
+k=10
+DIR=$HOME
+
+# Comprobación demasiados argumentos 
+if [ $# -gt 3 ]
+	then 
+	echo Too many arguments >&2
+	exit 1
+fi
+
+# Proceso de argumentos 
+getopts :n: opt 
+	case $opt in
+	n)	if [ "$1" != "-n" ]						# Para evitar opciones encadenadas (sólo existe la opción -n)
+			then
+			echo Too many options >&2
+			exit 1 
+		fi
+		if [ -d $2 ]							# Comprobación del segundo argumento. Si es una dirección, falta el modificador
+			then
+			echo Missing arguments >&2
+			exit 1
+		fi
+		
+		if [ $2 -eq $2 2>/dev/null ]					# Comprobación de si el segundo argumento es un número (si lo es, se actualiza k)
+			then
+			if [ $2 -lt 0 ]						# Comprobación de que el número sea positivo
+				then
+				echo The argument must be positive >&2
+				exit 1
+			fi
+			k="$OPTARG"
+			if [ $# -eq 3 ]						# Si hay 3 argumnetos, el tercero corresponde al directorio
+				then 
+				DIR=$3
+			fi
+		else	
+			echo Argument must be a number >&2
+			exit 1
+		fi ;;
+
+	?)	if [ "`echo $1 | cut -b 1`" = "-" ]				# Si HAY una opción que no existe
+			then
+			echo Invalid option >&2
+			exit 1
+		fi
+
+		if [ "$1" = "-n" ]						# Si la opción existe, pero falta el modificador
+			then
+			echo Missing arguments >&2
+			exit 1 
+		fi 
+		if [ $# -eq 1 ]							# Si no ha habido errores, el primer (y único) argumento será en este caso el primer argumento
+			then
+			DIR=$1										
+		elif [ $# -gt 1 ]						# No debe haber más de un argumento si no se ha usado la opción -n o no se ha respetado el orden
+			then 
+			echo Too many arguments or missplaced >&2	
+			exit 1
+		fi ;;
+	esac
+
+# Comprobación acerca de la existencia del fichero que se pasa como directorio
+if [ ! -e $DIR ]
+	then
+	echo "The directory doesn't exist" >&2 
+	exit 1
+fi
+
+# Comprobación de que la existencia del fichero que se pasa como directorio sea en efecto una directorio
+if [ ! -d $DIR ]
+	then
+	echo "The file isn't a directory" >&2 
+	exit 1
+fi
+
+
+
+du $DIR | sort -n | tail -n $k
