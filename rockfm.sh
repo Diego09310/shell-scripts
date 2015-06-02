@@ -16,7 +16,7 @@ list_file=/home/diego/Dropbox/Github/shell-scripts/list.txt
 	artist=`echo $song | sed 's/\:.*//g'`
 	name_rock=`echo $name | sed 's/@.*//g'`
 
-	rm index.html
+	#rm index.html 		# ya no es necesario
 	prev_name=`tail -1 list.txt`
 	notify-send "$name"
 	
